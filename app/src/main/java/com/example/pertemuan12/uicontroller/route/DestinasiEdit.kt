@@ -1,4 +1,7 @@
 package com.example.pertemuan12.uicontroller.route
 
-object DestinasiEdit {
+import com.example.pertemuan12.R
+
+object DestinasiEdit: DestinasiNavigasi {
+
 }
