@@ -1,8 +1,10 @@
 package com.example.pertemuan12.view
 
+import androidx.compose.foundation.Image
 import com.example.pertemuan12.modeldata.DataSiswa
+import com.example.pertemuan12.viewmodel.HomeViewModel
+import com.example.pertemuan12.viewmodel.StatusUiSiswa
 import com.example.pertemuan12.viewmodel.provider.PenyediaViewModel
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,7 +22,6 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -33,13 +34,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pertemuan12.R
 import com.example.pertemuan12.uicontroller.route.DestinasiHome
-import com.example.pertemuan12.viewmodel.HomeViewModel
-import com.example.pertemuan12.viewmodel.StatusUiSiswa
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,8 +53,7 @@ fun HomeScreen(
 ) {
 	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 	Scaffold(
-		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection
-		),
+		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 		topBar = {
 			SiswaTopAppBar(
 				title = stringResource(DestinasiHome.titleRes),
@@ -103,8 +102,7 @@ fun HomeBody(
 		when(statusUiSiswa){
 			is StatusUiSiswa.Loading -> LoadingScreen()
 			//edit 2.5 : tambahkan event onSiswaClick
-			is StatusUiSiswa.Success -> DaftarSiswa(itemSiswa = statusUiSiswa
-				.siswa,
+			is StatusUiSiswa.Success -> DaftarSiswa(itemSiswa = statusUiSiswa.siswa,
 				onSiswaClick = {onSiswaClick(it.id)} )
 			is StatusUiSiswa.Error -> ErrorScreen(
 				retryAction,
@@ -116,13 +114,11 @@ fun HomeBody(
 
 @Composable
 fun LoadingScreen(modifier: Modifier = Modifier) {
-	Column(
-		modifier = modifier.fillMaxSize(),
-		verticalArrangement = Arrangement.Center,
-		horizontalAlignment = Alignment.CenterHorizontally
-	) {
-		CircularProgressIndicator(modifier = Modifier.size(50.dp))
-	}
+	Image(
+		modifier = modifier.size(200.dp),
+		painter = painterResource(R.drawable.loading_img),
+		contentDescription = stringResource(R.string.loading)
+	)
 }
 
 @Composable
@@ -132,8 +128,7 @@ fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
 		verticalArrangement = Arrangement.Center,
 		horizontalAlignment = Alignment.CenterHorizontally
 	) {
-		Text(text = stringResource(R.string.gagal), modifier = Modifier
-			.padding(16.dp))
+		Text(text = stringResource(R.string.gagal), modifier = Modifier.padding(16.dp))
 		Button(onClick = retryAction) {
 			Text(stringResource(R.string.retry))
 		}
@@ -161,42 +156,3 @@ fun DaftarSiswa(
 	}
 }
 
-@Composable
-fun ItemSiswa(
-	siswa: DataSiswa,
-	modifier: Modifier = Modifier
-) {
-	Card(
-		modifier = modifier,
-		elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-	) {
-		Column(
-			modifier = Modifier.padding(dimensionResource(id = R.dimen
-				.padding_large)),
-			verticalArrangement = Arrangement.spacedBy(dimensionResource(
-				id = R.dimen.padding_small))
-		) {
-			Row(
-				modifier = Modifier.fillMaxWidth()
-			) {
-				Text(
-					text = siswa.nama,
-					style = MaterialTheme.typography.titleLarge,
-				)
-				Spacer(Modifier.weight(1f))
-				Icon(
-					imageVector = Icons.Default.Phone,
-					contentDescription = null,
-				)
-				Text(
-					text = siswa.telpon,
-					style = MaterialTheme.typography.titleMedium
-				)
-			}
-			Text(
-				text = siswa.alamat,
-				style = MaterialTheme.typography.titleMedium
-			)
-		}
-	}
-}
